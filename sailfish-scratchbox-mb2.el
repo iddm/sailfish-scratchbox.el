@@ -4,7 +4,7 @@
 
 ;; Author: V. V. Polevoy <fx@thefx.co>
 ;; Version: 1.0.0
-;; Keywords: mb2, building, scratchbox
+;; Keywords: mb2, building, scratchbox, sailfish
 ;; URL: https://github.com/vityafx/mb2.el
 
 ;;; Commentary:
