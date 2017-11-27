@@ -1,4 +1,4 @@
-;;; mb2.el --- Scratchbox building packages made simpler.
+;;; sailfish-scratchbox-mb2.el --- Scratchbox building packages made simpler.
 
 ;; Copyright (C) 2017 Victor Polevoy
 
@@ -81,4 +81,4 @@ Something like 'sdk mb2-build'"
   )
 
 (provide 'scratchbox)
-;;; mb2.el ends here
+;;; sailfish-scratchbox-mb2.el ends here
