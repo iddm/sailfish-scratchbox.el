@@ -39,14 +39,14 @@
   :safe #'stringp)
 
 (defcustom scratchbox-mb2-build-options ""
-  "mb2-build script options."
+  "The mb2-build script options."
   :type 'string
   :group 'scratchbox
   :safe #'stringp)
 
 
 (defun scratchbox-mb2-project-root ()
-  "Returns project root"
+  "Return project root."
   (locate-dominating-file buffer-file-name ".git")
   )
 
@@ -61,7 +61,7 @@ Something like 'sdk mb2-build'"
   "Scratchbox compilation mode")
 
 (defun scratchbox-mb2-build-run ()
-  "Runs the mb2 build script on the project"
+  "Run the mb2 build script on the project."
   (save-some-buffers (not compilation-ask-about-save)
                      (when (boundp 'compilation-save-buffers-predicate)
                        compilation-save-buffers-predicate))
