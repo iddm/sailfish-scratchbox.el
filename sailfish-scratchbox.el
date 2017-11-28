@@ -6,6 +6,7 @@
 ;; Version: 1.0.2
 ;; Keywords: sb2, mb2, building, scratchbox, sailfish
 ;; URL: https://github.com/vityafx/sailfish-scratchbox.el
+;; License: MIT
 
 ;;; Commentary:
 
