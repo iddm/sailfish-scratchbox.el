@@ -91,14 +91,14 @@ Something like 'sdk mb2 build'"
   "Sailfish scratchbox compilation mode")
 
 (defun run-with-project-path (function-to-run)
-  "Run the function if the current buffer is inside a project."
+  "Run the FUNCTION-TO-RUN if the current buffer is inside a project."
   (let ((root-dir (scratchbox-project-root)))
     (if root-dir
         (funcall function-to-run root-dir)
         (message "(%s) does not seem to be inside a valid sailfish os project." (buffer-name)))))
 
 (defun scratchbox-mb2-build-run (project-root-path)
-  "Run the mb2 build script on the project."
+  "Run the mb2 build script on the project with PROJECT-ROOT-PATH."
   (save-some-buffers (not compilation-ask-about-save)
                      (when (boundp 'compilation-save-buffers-predicate)
                        compilation-save-buffers-predicate))
@@ -110,7 +110,7 @@ Something like 'sdk mb2 build'"
         (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
 
 (defun scratchbox-deploy-rpms-run (project-root-path)
-  "Run the deploy command."
+  "Run the deploy command with PROJECT-ROOT-PATH."
   (when (get-buffer sailfish-scratchbox-deploy-buffer-name)
     (kill-buffer sailfish-scratchbox-deploy-buffer-name))
   (let ((command-to-run sailfish-scratchbox-deploy-rpms-command))
@@ -119,7 +119,7 @@ Something like 'sdk mb2 build'"
         (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
 
 (defun scratchbox-install-rpms-run (project-root-path)
-  "Run the install rpm packages command."
+  "Run the install rpm packages command with PROJECT-ROOT-PATH."
   (when (get-buffer sailfish-scratchbox-deploy-buffer-name)
     (kill-buffer sailfish-scratchbox-deploy-buffer-name))
   (let ((command-to-run (scratchbox-install-rpms-generate-command)))
