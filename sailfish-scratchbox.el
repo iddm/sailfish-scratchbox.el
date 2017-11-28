@@ -53,16 +53,14 @@
 
 (defun scratchbox-project-root ()
   "Return project root."
-  (or (locate-dominating-file buffer-file-name ".git/") (locate-dominating-file buffer-file-name "rpm/"))
-  )
+  (or (locate-dominating-file buffer-file-name ".git/") (locate-dominating-file buffer-file-name "rpm/")))
 
 (defun scratchbox-mb2-build-generate-command ()
   "Compile a full cmd line for invoking mb2 build script.
 
 Something like 'sdk mb2 build'"
   (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
-          sailfish-scratchbox-mb2-build  " " sailfish-scratchbox-mb2-build-options "'")
-  )
+          sailfish-scratchbox-mb2-build  " " sailfish-scratchbox-mb2-build-options "'"))
 
 (define-compilation-mode sailfish-scratchbox-compilation-mode "sailfish scratchbox"
   "Sailfish scratchbox compilation mode")
@@ -86,8 +84,7 @@ Something like 'sdk mb2 build'"
 (defun sailfish-scratchbox-mb2-build ()
   "Build the project inside the sdk this file is in."
   (interactive)
-  (scratchbox-mb2-build-run)
-  )
+  (scratchbox-mb2-build-run))
 
 (provide 'sailfish-scratchbox)
 ;;; sailfish-scratchbox.el ends here
