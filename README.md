@@ -27,6 +27,7 @@ settings may not suit each user. You may customize these variables in your `.dir
             (sailfish-scratchbox-build-buffer-name . "*scratchbox build*")
             (sailfish-scratchbox-deploy-buffer-name . "*scratchbox deploy*")
             (sailfish-scratchbox-deploy-rpms-command . "scp RPMS/*.rpm nemo@192.168.2.15:/home/nemo")
+            (sailfish-scratchbox-install-in-sdk . "sb2 -R rpm -i RPMS/*.rpm --force --verbose")
             )))
 ```
 
@@ -41,7 +42,12 @@ installation guide it is an alias `sdk` which is installed into `.bashrc` file.
 - `sailfish-scratchbox-deploy-buffer-name` - the build buffer name.
 - `sailfish-scratchbox-deploy-rpms-command` - the command for copying project artifacts (rpm files) to the phone.
 Must not ask user anything because there is no possibility for user input in the compilation buffer.
+- `sailfish-scratchbox-install-in-sdk` - the command for installing project artifacts (rpm files) into the sdk (target).
 
 ## Functions
 - `sailfish-scratchbox-mb2-build` - build the project in which the current buffer is in.
 - `sailfish-scratchbox-deploy-rpms` - copy the project artifacts onto the phone.
+- `sailfish-scratchbox-install-rpms` - install the project artifacts into the sdk (target).
+
+## Usage
+Using the package is very simple: open any file of a project in a buffer and then call the needed function - it will automatically find the project root and perform operations there.
