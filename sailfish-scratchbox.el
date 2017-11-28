@@ -3,7 +3,7 @@
 ;; Copyright (C) 2017 Victor Polevoy
 
 ;; Author: V. V. Polevoy <fx@thefx.co>
-;; Version: 1.2.0
+;; Version: 1.2.1
 ;; Keywords: sb2, mb2, building, scratchbox, sailfish
 ;; URL: https://github.com/vityafx/sailfish-scratchbox.el
 ;; License: MIT
@@ -64,7 +64,7 @@ User must have his identity installed onto the phone is the command invokes scp.
   :group 'sailfish-scratchbox
   :safe #'stringp)
 
-(defcustom sailfish-scratchbox-install-in-sdk "sb2 -R rpm -i RPMS/*.rpm --force"
+(defcustom sailfish-scratchbox-install-in-sdk "sb2 -R rpm -i RPMS/*.rpm --force --verbose"
   "The sailfish scratchbox command to install project packages into the sdk."
   :type 'string
   :group 'sailfish-scratchbox
