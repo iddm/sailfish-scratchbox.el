@@ -3,7 +3,7 @@
 ;; Copyright (C) 2017 Victor Polevoy
 
 ;; Author: V. V. Polevoy <fx@thefx.co>
-;; Version: 1.1.0
+;; Version: 1.2.0
 ;; Keywords: sb2, mb2, building, scratchbox, sailfish
 ;; URL: https://github.com/vityafx/sailfish-scratchbox.el
 ;; License: MIT
@@ -64,6 +64,12 @@ User must have his identity installed onto the phone is the command invokes scp.
   :group 'sailfish-scratchbox
   :safe #'stringp)
 
+(defcustom sailfish-scratchbox-install-in-sdk "sb2 -R rpm -i RPMS/*.rpm --force"
+  "The sailfish scratchbox command to install project packages into the sdk."
+  :type 'string
+  :group 'sailfish-scratchbox
+  :safe #'stringp)
+
 
 (defun scratchbox-project-root ()
   "Return project root."
@@ -76,47 +82,68 @@ Something like 'sdk mb2 build'"
   (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
           sailfish-scratchbox-mb2-build  " " sailfish-scratchbox-mb2-build-options "'"))
 
+(defun scratchbox-install-rpms-generate-command ()
+  "Compile a full cmd line for installing rpm packages into a target."
+  (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
+          sailfish-scratchbox-install-in-sdk "'"))
+
 (define-compilation-mode sailfish-scratchbox-compilation-mode "sailfish scratchbox"
   "Sailfish scratchbox compilation mode")
 
-(defun scratchbox-mb2-build-run ()
+(defun run-with-project-path (function-to-run)
+  "Run the function if the current buffer is inside a project."
+  (let ((root-dir (scratchbox-project-root)))
+    (if root-dir
+        (funcall function-to-run root-dir)
+        (message "(%s) does not seem to be inside a valid sailfish os project." (buffer-name)))))
+
+(defun scratchbox-mb2-build-run (project-root-path)
   "Run the mb2 build script on the project."
   (save-some-buffers (not compilation-ask-about-save)
                      (when (boundp 'compilation-save-buffers-predicate)
                        compilation-save-buffers-predicate))
   (when (get-buffer sailfish-scratchbox-build-buffer-name)
     (kill-buffer sailfish-scratchbox-build-buffer-name))
-  (let ((command-to-run (scratchbox-mb2-build-generate-command))
-        (root-dir (scratchbox-project-root)))
-    (if root-dir
-        (with-current-buffer (get-buffer-create sailfish-scratchbox-build-buffer-name)
-          (setq default-directory root-dir)
-          (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
-        (message "(%s) does not seem to be inside a valid sailfish os project." (buffer-name)))
+  (let ((command-to-run (scratchbox-mb2-build-generate-command)))
+      (with-current-buffer (get-buffer-create sailfish-scratchbox-build-buffer-name)
+        (setq default-directory project-root-path)
+        (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
 
-(defun scratchbox-deploy-rpms-run ()
+(defun scratchbox-deploy-rpms-run (project-root-path)
   "Run the deploy command."
   (when (get-buffer sailfish-scratchbox-deploy-buffer-name)
     (kill-buffer sailfish-scratchbox-deploy-buffer-name))
-  (let ((command-to-run sailfish-scratchbox-deploy-rpms-command)
-        (root-dir (scratchbox-project-root)))
-    (if root-dir
-        (with-current-buffer (get-buffer-create sailfish-scratchbox-deploy-buffer-name)
-          (setq default-directory root-dir)
-          (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
-        (message "(%s) does not seem to be inside a valid sailfish os project." (buffer-name)))
+  (let ((command-to-run sailfish-scratchbox-deploy-rpms-command))
+      (with-current-buffer (get-buffer-create sailfish-scratchbox-deploy-buffer-name)
+        (setq default-directory project-root-path)
+        (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
+
+(defun scratchbox-install-rpms-run (project-root-path)
+  "Run the install rpm packages command."
+  (when (get-buffer sailfish-scratchbox-deploy-buffer-name)
+    (kill-buffer sailfish-scratchbox-deploy-buffer-name))
+  (let ((command-to-run (scratchbox-install-rpms-generate-command)))
+    (with-current-buffer (get-buffer-create sailfish-scratchbox-deploy-buffer-name)
+      (setq default-directory project-root-path)
+      (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
 
 ;;;###autoload
 (defun sailfish-scratchbox-mb2-build ()
   "Build the project inside the sdk this file is in."
   (interactive)
-  (scratchbox-mb2-build-run))
+  (run-with-project-path 'scratchbox-mb2-build-run))
 
 ;;;###autoload
-(defun sailfish-scratchbox-deploy-rpms()
+(defun sailfish-scratchbox-deploy-rpms ()
   "Copy the the built project artifacts to the phone."
   (interactive)
-  (scratchbox-deploy-rpms-run))
+  (run-with-project-path 'scratchbox-deploy-rpms-run))
+
+;;;###autoload
+(defun sailfish-scratchbox-install-rpms ()
+  "Install project rpm packages into the sailfish os scratchbox."
+  (interactive)
+  (run-with-project-path 'scratchbox-install-rpms-run))
 
 (provide 'sailfish-scratchbox)
 ;;; sailfish-scratchbox.el ends here
