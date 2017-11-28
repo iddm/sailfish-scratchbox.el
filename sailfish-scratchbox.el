@@ -3,9 +3,9 @@
 ;; Copyright (C) 2017 Victor Polevoy
 
 ;; Author: V. V. Polevoy <fx@thefx.co>
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Keywords: sb2, mb2, building, scratchbox, sailfish
-;; URL: https://github.com/vityafx/mb2.el
+;; URL: https://github.com/vityafx/sailfish-scratchbox.el
 
 ;;; Commentary:
 
@@ -44,6 +44,12 @@
   :group 'sailfish-scratchbox
   :safe #'stringp)
 
+(defcustom sailfish-scratchbox-build-buffer-name "*scratchbox build*"
+  "The sailfish scratchbox build buffer name."
+  :type 'string
+  :group 'sailfish-scratchbox
+  :safe #'stringp)
+
 
 (defun scratchbox-project-root ()
   "Return project root."
@@ -53,7 +59,7 @@
 (defun scratchbox-mb2-build-generate-command ()
   "Compile a full cmd line for invoking mb2 build script.
 
-Something like 'sdk mb2-build'"
+Something like 'sdk mb2 build'"
   (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
           sailfish-scratchbox-mb2-build  " " sailfish-scratchbox-mb2-build-options "'")
   )
@@ -66,17 +72,19 @@ Something like 'sdk mb2-build'"
   (save-some-buffers (not compilation-ask-about-save)
                      (when (boundp 'compilation-save-buffers-predicate)
                        compilation-save-buffers-predicate))
-  (when (get-buffer "*scratchbox build*")
-    (kill-buffer "*scratchbox build*"))
+  (when (get-buffer sailfish-scratchbox-build-buffer-name)
+    (kill-buffer sailfish-scratchbox-build-buffer-name))
   (let ((command-to-run (scratchbox-mb2-build-generate-command))
         (root-dir (scratchbox-project-root)))
-    (with-current-buffer (get-buffer-create "*scratchbox build*")
-      (setq default-directory root-dir)
-      (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
+    (if root-dir
+        (with-current-buffer (get-buffer-create sailfish-scratchbox-build-buffer-name)
+          (setq default-directory root-dir)
+          (compilation-start command-to-run 'sailfish-scratchbox-compilation-mode (lambda (m) (buffer-name))))))
+        (message "(%s) does not seem to be inside a valid sailfish os project." (buffer-name)))
 
 ;;;###autoload
 (defun sailfish-scratchbox-mb2-build ()
-  "Test the project this file is in."
+  "Build the project inside the sdk this file is in."
   (interactive)
   (scratchbox-mb2-build-run)
   )
