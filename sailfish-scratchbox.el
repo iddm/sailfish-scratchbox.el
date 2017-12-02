@@ -1,16 +1,16 @@
-;;; sailfish-scratchbox.el --- Scratchbox building packages made simpler.
+;;; sailfish-scratchbox.el --- Sailfish OS scratchbox inside the emacs.
 
 ;; Copyright (C) 2017 Victor Polevoy
 
 ;; Author: V. V. Polevoy <fx@thefx.co>
-;; Version: 1.2.1
+;; Version: 1.2.2
 ;; Keywords: sb2, mb2, building, scratchbox, sailfish
 ;; URL: https://github.com/vityafx/sailfish-scratchbox.el
 ;; License: MIT
 
 ;;; Commentary:
 
-;; This packages provides easier way to run sailfish os sdk scripts
+;; This package provides easier way to run sailfish os sdk scripts
 ;; and tools as 'mb2 build' for example.
 
 ;;; Code:
@@ -79,13 +79,14 @@ User must have his identity installed onto the phone is the command invokes scp.
   "Compile a full cmd line for invoking mb2 build script.
 
 Something like 'sdk mb2 build'"
-  (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
-          sailfish-scratchbox-mb2-build  " " sailfish-scratchbox-mb2-build-options "'"))
+  (concat sailfish-scratchbox-interpreter " " (shell-quote-argument (concat sailfish-scratchbox-which-sdk " "
+                                                                            sailfish-scratchbox-mb2-build))
+          " " sailfish-scratchbox-mb2-build-options))
 
 (defun scratchbox-install-rpms-generate-command ()
   "Compile a full cmd line for installing rpm packages into a target."
-  (concat sailfish-scratchbox-interpreter " '" sailfish-scratchbox-which-sdk " "
-          sailfish-scratchbox-install-in-sdk "'"))
+  (concat sailfish-scratchbox-interpreter " " (shell-quote-argument (concat sailfish-scratchbox-which-sdk " "
+                                                                            sailfish-scratchbox-install-in-sdk))))
 
 (define-compilation-mode sailfish-scratchbox-compilation-mode "sailfish scratchbox"
   "Sailfish scratchbox compilation mode")
